@@ -21,6 +21,10 @@
 #include "commands.h"
 #include "rules.h"
 
+#include "src/esp-knx-ip/esp-knx-ip.h"
+
+config_id_t param_id;
+
 DNSServer dnsServer;
 
 //to read bus voltage in stats
@@ -957,6 +961,24 @@ void setupMqtt() {
   mqtt_client.setServer(heishamonSettings.mqtt_server, atoi(heishamonSettings.mqtt_port));
   mqtt_client.setCallback(mqtt_callback);
 }
+
+void setupKnx() {
+
+  	// Register a callback that is called when a configurable group address is receiving a telegram
+	//knx.register_callback("Set/Get callback", my_callback);
+	//knx.register_callback("Write callback", my_other_callback);
+
+	int default_val = 21;
+	param_id = knx.config_register_int("My Parameter", default_val);
+
+	// Register a configurable group address for sending out answers
+	my_GA = knx.config_register_ga("Answer GA");
+
+	knx.load(); // Try to load a config from EEPROM
+
+
+	knx.start(); // Start everything. Must be called after WiFi connection has been established
+}  
 
 void setupConditionals() {
   //send_initial_query(); //maybe necessary but for now disable. CZ-TAW1 sends this query on boot

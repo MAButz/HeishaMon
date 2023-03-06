@@ -23,9 +23,10 @@
 
 #include "src/esp-knx-ip/esp-knx-ip.h"
 
-config_id_t param_id;
-
 DNSServer dnsServer;
+
+// Group addresses to send to (1/1/1, 1/1/2 and 1/1/3)
+address_t temp_ga = knx.GA_to_address(3, 7, 1);
 
 //to read bus voltage in stats
 ADC_MODE(ADC_VCC);
@@ -964,20 +965,24 @@ void setupMqtt() {
 
 void setupKnx() {
 
+    // Set physical address (1.1.1)
+  knx.physical_address_set(knx.PA_to_address(1, 1, 123));
+
   	// Register a callback that is called when a configurable group address is receiving a telegram
 	//knx.register_callback("Set/Get callback", my_callback);
 	//knx.register_callback("Write callback", my_other_callback);
 
-	int default_val = 21;
-	param_id = knx.config_register_int("My Parameter", default_val);
+	//int default_val = 21;
+	//param_id = knx.config_register_int("My Parameter", default_val);
 
 	// Register a configurable group address for sending out answers
-	my_GA = knx.config_register_ga("Answer GA");
+	//my_GA = knx.config_register_ga("Answer GA");
 
-	knx.load(); // Try to load a config from EEPROM
+	//knx.load(); // Try to load a config from EEPROM
 
+  callback_id_t temp_cb_id = knx.callback_register("Read Temperature", temp_cb);
 
-	knx.start(); // Start everything. Must be called after WiFi connection has been established
+	//knx.start(); // Start everything. Must be called after WiFi connection has been established
 }  
 
 void setupConditionals() {
@@ -1066,6 +1071,8 @@ void setup() {
 
   setupMqtt();
   setupHttp();
+
+  setupKnx();
 
   sntp_setoperatingmode(SNTP_OPMODE_POLL);
   sntp_init();

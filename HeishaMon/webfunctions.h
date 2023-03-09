@@ -38,10 +38,16 @@ struct settingsStruct {
   char mqtt_topic_base[128] = "panasonic_heat_pump";
   char ntp_servers[254] = "pool.ntp.org";
 
+  config_id_t my_GA;
+  config_id_t param_id;
+
+  int8_t some_var = 0;
+
   bool listenonly = false; //listen only so heishamon can be installed parallel to cz-taw1, set commands will not work though
   bool optionalPCB = false; //do we emulate an optional PCB?
   bool use_1wire = false; //1wire enabled?
   bool use_s0 = false; //s0 enabled?
+  bool use_knx = false; //knx-ip enabled?
   bool logMqtt = false; //log to mqtt from start
   bool logHexdump = false; //log hexdump from start
   bool logSerial1 = true; //log to serial1 (gpio2) from start

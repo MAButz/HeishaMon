@@ -21,7 +21,7 @@
 #include "commands.h"
 #include "rules.h"
 
-#include "src/esp-knx-ip/esp-knx-ip.h"
+#include <esp-knx-ip.h>
 
 DNSServer dnsServer;
 
